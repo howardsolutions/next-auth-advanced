@@ -19,11 +19,19 @@ import { FormError } from './form-error';
 import { FormSuccess } from './form-success';
 import { login } from '@/actions/login';
 import { useState, useTransition } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
-  const [errorMsg, setErrorMsg] = useState<string | undefined>("")
-  const [successMsg, setSuccessMsg] = useState<string | undefined>("")
+  const [errorMsg, setErrorMsg] = useState<string | undefined>('');
+  const [successMsg, setSuccessMsg] = useState<string | undefined>('');
+
+  const searchParams = useSearchParams();
+
+  const urlError =
+    searchParams.get('error') === 'OAuthAccountNotLinked'
+      ? 'Email already in use with different OAuth Provider'
+      : '';
 
   const loginForm = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -34,14 +42,14 @@ const LoginForm = () => {
   });
 
   const onSubmit = function (values: z.infer<typeof LoginSchema>) {
-    setErrorMsg("")
-    setSuccessMsg("")
+    setErrorMsg('');
+    setSuccessMsg('');
 
     startTransition(() => {
       login(values).then((data) => {
-        setErrorMsg(data.error)
-        setSuccessMsg(data.success)
-      })
+        setErrorMsg(data.error);
+        setSuccessMsg(data.success);
+      });
     });
   };
 
@@ -97,7 +105,7 @@ const LoginForm = () => {
             />
           </div>
 
-          <FormError message={errorMsg} />
+          <FormError message={errorMsg || urlError} />
           <FormSuccess message={successMsg} />
 
           <Button disabled={isPending} type='submit' className='w-full'>
