@@ -1,7 +1,7 @@
 'use client';
 
 import BackButton from './back-button';
-import { Social } from './social';
+import { LoginWithOAuth } from './login-with-oauth';
 
 import {
   Card,
@@ -36,7 +36,7 @@ export const CardWrapper = ({
       
       {showSocial && (
         <CardFooter>
-          <Social />
+          <LoginWithOAuth />
         </CardFooter>
       )}
 

@@ -1,13 +1,14 @@
 'use client';
+
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 import { useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { DEFAULT_REDIRECT_AFTER_LOGIN } from '@/routes';
-import { signIn } from '@/auth';
+import { signIn } from 'next-auth/react';
 
-export const Social = () => {
+export const LoginWithOAuth = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
 
