@@ -26,6 +26,7 @@ export const {
 
             return session
         },
+
         async jwt({ token }) {
             if (!token.sub) return token;
 
@@ -36,7 +37,26 @@ export const {
             token.role = existingUser.role;
 
             return token
-        }
+        },
+        
+        async signIn({user, account}) {
+            // Allow OAuth provider bypass (without) email verification extra step
+
+            if (account?.provider !== "credentials") {
+                return true; // true means continuing to login
+            }
+            
+            // Otherwise, if the user is not verified their email ,BLOCK them from logging in 
+            const existingUser = await getUserById(user.id as string);
+
+            if (!existingUser?.emailVerified) return false;
+
+            // TODO: 2FA Check
+
+
+            // By Default
+            return true;
+        },
     },
     events: {
         async linkAccount({ user }) {
