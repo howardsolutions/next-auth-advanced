@@ -6,6 +6,7 @@ import z from "zod";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { getUserByEmail } from "@/data/user";
+import { generateVerificationToken } from "@/lib/tokens";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
     const validatedFields = RegisterSchema.safeParse(values);
@@ -34,5 +35,11 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
         }
     })
 
-    return { success: "Register successfully, user created!" }
+    // VERIFY real human after register 
+    // 1) generate token
+    const verificationToken = await generateVerificationToken(email);
+    
+    // 2) Send verification token email
+
+    return { success: "Confirmation Email Sent to your inbox!" }
 } 
